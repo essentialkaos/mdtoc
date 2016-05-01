@@ -4,6 +4,7 @@
 
 * [Installation](#installation)
 * [Usage](#usage)
+* [Build Status](#build-status)
 * [Contributing](#contributing)
 * [License](#license)
 
