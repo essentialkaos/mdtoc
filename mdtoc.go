@@ -79,15 +79,33 @@ func main() {
 		return
 	}
 
-	if arg.GetB(ARG_HELP) || len(args) == 0 {
+	if arg.GetB(ARG_HELP) {
 		showUsage()
 		return
 	}
 
-	file := args[0]
+	var file string
+
+	if len(args) == 0 {
+		file = findProperReadme()
+
+		if file == "" {
+			showUsage()
+			return
+		}
+
+	} else {
+		file = args[0]
+	}
 
 	checkFile(file)
 	printToc(file)
+}
+
+// findProperReadme try to find readme file in current directory
+func findProperReadme() string {
+	file := fsutil.ProperPath("FRS", []string{"README.md", "readme.md"})
+	return file
 }
 
 // checkFile check markdown file before processing
