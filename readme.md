@@ -1,6 +1,6 @@
 ## MDToc
 
-`MDToc` is simple utility for generating table of content for markdown files.
+`MDToc` is simple utility for generating table of contents for markdown files.
 
 * [Installation](#installation)
 * [Usage](#usage)

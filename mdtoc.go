@@ -26,7 +26,7 @@ import (
 const (
 	APP  = "MDToc"
 	VER  = "0.0.1"
-	DESC = "Utility for generating table of content for markdown files"
+	DESC = "Utility for generating table of contents for markdown files"
 )
 
 const (
