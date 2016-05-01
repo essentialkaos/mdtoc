@@ -44,6 +44,13 @@ Examples:
 
 ```
 
+#### Build Status
+
+| Repository | Status |
+|------------|--------|
+| Stable | [![Build Status](https://travis-ci.org/essentialkaos/mdtoc.svg?branch=master)](https://travis-ci.org/essentialkaos/mdtoc) |
+| Unstable | [![Build Status](https://travis-ci.org/essentialkaos/mdtoc.svg?branch=develop)](https://travis-ci.org/essentialkaos/mdtoc) |
+
 #### Contributing
 
 Before contributing to this project please read our [Contributing Guidelines](https://github.com/essentialkaos/contributing-guidelines#contributing-guidelines).

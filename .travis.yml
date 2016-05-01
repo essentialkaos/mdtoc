@@ -1,0 +1,17 @@
+language: go
+
+go:
+  - 1.6.2
+  - tip
+
+sudo: false
+
+os:
+  - linux
+  - osx
+
+before_install:
+  - go get pkg.re/essentialkaos/ek.v1
+
+script:
+  - go build mdtoc.go
