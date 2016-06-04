@@ -29,6 +29,7 @@ Usage: mdtoc <options> file
 
 Options:
 
+  --flat, -f             Print flat (horizontal) TOC
   --min-level, -m 1-6    Minimal header level
   --max-level, -M 1-6    Maximum header level
   --no-color, -nc        Disable colors in output
