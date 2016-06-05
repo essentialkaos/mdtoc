@@ -25,13 +25,14 @@ import (
 
 const (
 	APP  = "MDToc"
-	VER  = "0.0.1"
+	VER  = "0.0.2"
 	DESC = "Utility for generating table of contents for markdown files"
 )
 
 const (
 	ARG_MIN_LEVEL = "m:min-level"
 	ARG_MAX_LEVEL = "M:max-level"
+	ARG_FLAT      = "f:flat"
 	ARG_NO_COLOR  = "nc:no-color"
 	ARG_HELP      = "h:help"
 	ARG_VER       = "v:version"
@@ -50,6 +51,7 @@ type Header struct {
 var argList = arg.Map{
 	ARG_MIN_LEVEL: &arg.V{Type: arg.INT, Value: 1, Min: 1, Max: 6},
 	ARG_MAX_LEVEL: &arg.V{Type: arg.INT, Value: 6, Min: 1, Max: 6},
+	ARG_FLAT:      &arg.V{Type: arg.BOOL},
 	ARG_NO_COLOR:  &arg.V{Type: arg.BOOL},
 	ARG_HELP:      &arg.V{Type: arg.BOOL, Alias: "u:usage"},
 	ARG_VER:       &arg.V{Type: arg.BOOL, Alias: "ver"},
@@ -99,7 +101,7 @@ func main() {
 	}
 
 	checkFile(file)
-	printToc(file)
+	printTOC(file)
 }
 
 // findProperReadme try to find readme file in current directory
@@ -131,8 +133,8 @@ func checkFile(file string) {
 	}
 }
 
-// printToc print TOC for file
-func printToc(file string) {
+// printTOC collect headers and print TOC for given markdown file
+func printTOC(file string) {
 	fd, err := os.Open(file)
 
 	if err != nil {
@@ -156,21 +158,75 @@ func printToc(file string) {
 		headers = append(headers, parseHeader(line))
 	}
 
-	fmtutil.Separator(false)
+	if len(headers) == 0 {
+		printWarn("Headers not found in given file")
+		return
+	}
 
-	for _, header := range headers {
-		if header.Level < arg.GetI(ARG_MIN_LEVEL) || header.Level > arg.GetI(ARG_MAX_LEVEL) {
-			continue
-		}
+	var toc string
 
-		fmtc.Printf(
-			"%s [%s](%s)\n",
-			getMarkdownListPrefix(header.Level),
-			header.Text, header.Link,
-		)
+	switch arg.GetB(ARG_FLAT) {
+	case true:
+		toc = renderFlatTOC(headers)
+	case false:
+		toc = renderTOC(headers)
+	}
+
+	if toc == "" {
+		printWarn("Suitable headers not found in given file")
+		return
 	}
 
 	fmtutil.Separator(false)
+	fmtc.Println(toc)
+	fmtutil.Separator(false)
+}
+
+// renderTOC render headers as default (vertical) TOC
+func renderTOC(headers []*Header) string {
+	var toc []string
+
+	for _, header := range headers {
+		if !isSuitableHeader(header) {
+			continue
+		}
+
+		toc = append(toc, fmtc.Sprintf(
+			"%s [%s](%s)",
+			getMarkdownListPrefix(header.Level),
+			header.Text, header.Link,
+		))
+	}
+
+	return strings.Join(toc, "\n")
+}
+
+// renderFlatTOC render headers as flat (horizontal) TOC
+func renderFlatTOC(headers []*Header) string {
+	var toc []string
+
+	for _, header := range headers {
+		if !isSuitableHeader(header) {
+			continue
+		}
+
+		toc = append(toc, fmtc.Sprintf("[%s](%s)", header.Text, header.Link))
+	}
+
+	if len(toc) == 0 {
+		return ""
+	}
+
+	return strings.Join(toc, " • ")
+}
+
+// isSuitableHeader return true if header complies defined levels
+func isSuitableHeader(header *Header) bool {
+	if header.Level < arg.GetI(ARG_MIN_LEVEL) || header.Level > arg.GetI(ARG_MAX_LEVEL) {
+		return false
+	}
+
+	return true
 }
 
 // parseHeader parse header text and return header struct
@@ -271,11 +327,17 @@ func printError(f string, a ...interface{}) {
 	fmtc.Printf("{r}"+f+"{!}\n", a...)
 }
 
+// printWarn prints warning message to console
+func printWarn(f string, a ...interface{}) {
+	fmtc.Printf("{y}"+f+"{!}\n", a...)
+}
+
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 func showUsage() {
 	info := usage.NewInfo("", "file")
 
+	info.AddOption(ARG_FLAT, "Print flat (horizontal) TOC")
 	info.AddOption(ARG_MIN_LEVEL, "Minimal header level", "1-6")
 	info.AddOption(ARG_MAX_LEVEL, "Maximum header level", "1-6")
 	info.AddOption(ARG_NO_COLOR, "Disable colors in output")
