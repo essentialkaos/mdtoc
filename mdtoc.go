@@ -13,19 +13,19 @@ import (
 	"regexp"
 	"strings"
 
-	"pkg.re/essentialkaos/ek.v1/arg"
-	"pkg.re/essentialkaos/ek.v1/fmtc"
-	"pkg.re/essentialkaos/ek.v1/fmtutil"
-	"pkg.re/essentialkaos/ek.v1/fsutil"
-	"pkg.re/essentialkaos/ek.v1/strutil"
-	"pkg.re/essentialkaos/ek.v1/usage"
+	"pkg.re/essentialkaos/ek.v3/arg"
+	"pkg.re/essentialkaos/ek.v3/fmtc"
+	"pkg.re/essentialkaos/ek.v3/fmtutil"
+	"pkg.re/essentialkaos/ek.v3/fsutil"
+	"pkg.re/essentialkaos/ek.v3/strutil"
+	"pkg.re/essentialkaos/ek.v3/usage"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 const (
 	APP  = "MDToc"
-	VER  = "0.0.2"
+	VER  = "0.0.3"
 	DESC = "Utility for generating table of contents for markdown files"
 )
 
@@ -33,6 +33,7 @@ const (
 	ARG_MIN_LEVEL = "m:min-level"
 	ARG_MAX_LEVEL = "M:max-level"
 	ARG_FLAT      = "f:flat"
+	ARG_HTML      = "H:html"
 	ARG_NO_COLOR  = "nc:no-color"
 	ARG_HELP      = "h:help"
 	ARG_VER       = "v:version"
@@ -52,6 +53,7 @@ var argList = arg.Map{
 	ARG_MIN_LEVEL: &arg.V{Type: arg.INT, Value: 1, Min: 1, Max: 6},
 	ARG_MAX_LEVEL: &arg.V{Type: arg.INT, Value: 6, Min: 1, Max: 6},
 	ARG_FLAT:      &arg.V{Type: arg.BOOL},
+	ARG_HTML:      &arg.V{Type: arg.BOOL},
 	ARG_NO_COLOR:  &arg.V{Type: arg.BOOL},
 	ARG_HELP:      &arg.V{Type: arg.BOOL, Alias: "u:usage"},
 	ARG_VER:       &arg.V{Type: arg.BOOL, Alias: "ver"},
@@ -133,7 +135,7 @@ func checkFile(file string) {
 	}
 }
 
-// printTOC collect headers and print TOC for given markdown file
+// printTOC collect headers and print ToC for given markdown file
 func printTOC(file string) {
 	fd, err := os.Open(file)
 
@@ -165,11 +167,13 @@ func printTOC(file string) {
 
 	var toc string
 
-	switch arg.GetB(ARG_FLAT) {
-	case true:
-		toc = renderFlatTOC(headers)
-	case false:
+	switch {
+	case !arg.GetB(ARG_FLAT):
 		toc = renderTOC(headers)
+	case arg.GetB(ARG_FLAT) && arg.GetB(ARG_HTML):
+		toc = renderFlatHTMLTOC(headers)
+	case arg.GetB(ARG_FLAT) && !arg.GetB(ARG_HTML):
+		toc = renderFlatTOC(headers)
 	}
 
 	if toc == "" {
@@ -182,7 +186,7 @@ func printTOC(file string) {
 	fmtutil.Separator(false)
 }
 
-// renderTOC render headers as default (vertical) TOC
+// renderTOC render headers as default (vertical) markdown ToC
 func renderTOC(headers []*Header) string {
 	var toc []string
 
@@ -201,7 +205,7 @@ func renderTOC(headers []*Header) string {
 	return strings.Join(toc, "\n")
 }
 
-// renderFlatTOC render headers as flat (horizontal) TOC
+// renderFlatTOC render headers as flat (horizontal) markdown ToC
 func renderFlatTOC(headers []*Header) string {
 	var toc []string
 
@@ -218,6 +222,25 @@ func renderFlatTOC(headers []*Header) string {
 	}
 
 	return strings.Join(toc, " • ")
+}
+
+// renderFlatTOC render headers as flat (horizontal) HTML ToC
+func renderFlatHTMLTOC(headers []*Header) string {
+	var toc []string
+
+	for _, header := range headers {
+		if !isSuitableHeader(header) {
+			continue
+		}
+
+		toc = append(toc, fmtc.Sprintf("<a href=\"%s\">%s</a>", header.Link, header.Text))
+	}
+
+	if len(toc) == 0 {
+		return ""
+	}
+
+	return "<p align=\"center\">" + strings.Join(toc, " • ") + "</p>"
 }
 
 // isSuitableHeader return true if header complies defined levels
@@ -337,7 +360,8 @@ func printWarn(f string, a ...interface{}) {
 func showUsage() {
 	info := usage.NewInfo("", "file")
 
-	info.AddOption(ARG_FLAT, "Print flat (horizontal) TOC")
+	info.AddOption(ARG_FLAT, "Print flat (horizontal) ToC")
+	info.AddOption(ARG_HTML, "Render HTML ToC instead Markdown (works with {g}--flat{!})")
 	info.AddOption(ARG_MIN_LEVEL, "Minimal header level", "1-6")
 	info.AddOption(ARG_MAX_LEVEL, "Maximum header level", "1-6")
 	info.AddOption(ARG_NO_COLOR, "Disable colors in output")
