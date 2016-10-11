@@ -27,7 +27,7 @@ go get -u github.com/essentialkaos/mdtoc
 ```
 Usage: mdtoc {options} file
 
-Options:
+Options
 
   --flat, -f             Print flat (horizontal) ToC
   --html, -H             Render HTML ToC instead Markdown (works with --flat)
@@ -37,7 +37,7 @@ Options:
   --help, -h             Show this help message
   --version, -v          Show version
 
-Examples:
+Examples
 
   mdtoc readme.md
   Generate table of contents for readme.md
