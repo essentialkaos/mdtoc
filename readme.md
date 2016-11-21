@@ -45,7 +45,6 @@ Examples
   mdtoc -m 2 -M 4 readme.md
   Generate table of contents for readme.md with 2-4 level headers
 
-
 ```
 
 ## Build Status
