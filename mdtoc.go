@@ -25,7 +25,7 @@ import (
 
 const (
 	APP  = "MDToc"
-	VER  = "0.0.4"
+	VER  = "0.0.5"
 	DESC = "Utility for generating table of contents for markdown files"
 )
 
@@ -291,6 +291,8 @@ func parseHeaderText(text string) (string, int) {
 
 		break
 	}
+
+	header = strings.TrimRight(header, " ")
 
 	return header, level
 }
