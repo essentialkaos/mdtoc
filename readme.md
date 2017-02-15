@@ -1,4 +1,4 @@
-# MDToc
+# MDToc [![Build Status](https://travis-ci.org/essentialkaos/mdtoc.svg?branch=master)](https://travis-ci.org/essentialkaos/mdtoc) [![Go Report Card](https://goreportcard.com/badge/github.com/essentialkaos/mdtoc)](https://goreportcard.com/report/github.com/essentialkaos/mdtoc) [![License](https://gh.kaos.io/ekol.svg)](https://essentialkaos.com/ekol)
 
 `MDToc` is simple utility for generating table of contents for markdown files.
 
