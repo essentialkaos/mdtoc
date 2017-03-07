@@ -22,7 +22,7 @@ matrix:
     - go: tip
 
 before_install:
-  - go get pkg.re/essentialkaos/ek.v7
+  - go get -v pkg.re/essentialkaos/ek.v7
 
 script:
   - go build mdtoc.go
