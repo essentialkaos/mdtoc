@@ -5,11 +5,11 @@ language: go
 go:
   - 1.6.x
   - 1.7.x
+  - 1.8.x
   - tip
 
 os:
   - linux
-  - osx
 
 branches:
   only:
@@ -22,7 +22,7 @@ matrix:
     - go: tip
 
 before_install:
-  - go get pkg.re/essentialkaos/ek.v5
+  - make deps
 
 script:
-  - go build mdtoc.go
+  - make all
