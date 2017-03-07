@@ -10,7 +10,7 @@
 
 ## Installation
 
-To build the MDToc from scratch, make sure you have a working Go 1.5+ workspace ([instructions](https://golang.org/doc/install)), then:
+To build the MDToc from scratch, make sure you have a working Go 1.6+ workspace ([instructions](https://golang.org/doc/install)), then:
 
 ```
 go get github.com/essentialkaos/mdtoc

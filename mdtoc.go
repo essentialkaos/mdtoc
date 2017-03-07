@@ -2,8 +2,8 @@ package main
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
-//                     Copyright (c) 2009-2015 Essential Kaos                         //
-//      Essential Kaos Open Source License <http://essentialkaos.com/ekol?en>         //
+//                     Copyright (c) 2009-2017 ESSENTIAL KAOS                         //
+//        Essential Kaos Open Source License <https://essentialkaos.com/ekol>         //
 //                                                                                    //
 // ////////////////////////////////////////////////////////////////////////////////// //
 
@@ -13,19 +13,20 @@ import (
 	"regexp"
 	"strings"
 
-	"pkg.re/essentialkaos/ek.v5/arg"
-	"pkg.re/essentialkaos/ek.v5/fmtc"
-	"pkg.re/essentialkaos/ek.v5/fmtutil"
-	"pkg.re/essentialkaos/ek.v5/fsutil"
-	"pkg.re/essentialkaos/ek.v5/strutil"
-	"pkg.re/essentialkaos/ek.v5/usage"
+	"pkg.re/essentialkaos/ek.v7/arg"
+	"pkg.re/essentialkaos/ek.v7/fmtc"
+	"pkg.re/essentialkaos/ek.v7/fmtutil"
+	"pkg.re/essentialkaos/ek.v7/fsutil"
+	"pkg.re/essentialkaos/ek.v7/strutil"
+	"pkg.re/essentialkaos/ek.v7/usage"
+	"pkg.re/essentialkaos/ek.v7/usage/update"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 const (
 	APP  = "MDToc"
-	VER  = "0.0.5"
+	VER  = "0.1.0"
 	DESC = "Utility for generating table of contents for markdown files"
 )
 
@@ -42,21 +43,21 @@ const (
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 type Header struct {
-	Level int
-	Text  string
-	Link  string
+	Level int    // Header level 1-7
+	Text  string // Header text
+	Link  string // Link
 }
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
-var argList = arg.Map{
-	ARG_MIN_LEVEL: &arg.V{Type: arg.INT, Value: 1, Min: 1, Max: 6},
-	ARG_MAX_LEVEL: &arg.V{Type: arg.INT, Value: 6, Min: 1, Max: 6},
-	ARG_FLAT:      &arg.V{Type: arg.BOOL},
-	ARG_HTML:      &arg.V{Type: arg.BOOL},
-	ARG_NO_COLOR:  &arg.V{Type: arg.BOOL},
-	ARG_HELP:      &arg.V{Type: arg.BOOL, Alias: "u:usage"},
-	ARG_VER:       &arg.V{Type: arg.BOOL, Alias: "ver"},
+var argMap = arg.Map{
+	ARG_MIN_LEVEL: {Type: arg.INT, Value: 1, Min: 1, Max: 6},
+	ARG_MAX_LEVEL: {Type: arg.INT, Value: 6, Min: 1, Max: 6},
+	ARG_FLAT:      {Type: arg.BOOL},
+	ARG_HTML:      {Type: arg.BOOL},
+	ARG_NO_COLOR:  {Type: arg.BOOL},
+	ARG_HELP:      {Type: arg.BOOL, Alias: "u:usage"},
+	ARG_VER:       {Type: arg.BOOL, Alias: "ver"},
 }
 
 var anchorRegExp = regexp.MustCompile(`[\s\d\w-]`)
@@ -64,7 +65,7 @@ var anchorRegExp = regexp.MustCompile(`[\s\d\w-]`)
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 func main() {
-	args, errs := arg.Parse(argList)
+	args, errs := arg.Parse(argMap)
 
 	if len(errs) != 0 {
 		for _, err := range errs {
@@ -378,12 +379,13 @@ func showUsage() {
 
 func showAbout() {
 	about := &usage.About{
-		App:     APP,
-		Version: VER,
-		Desc:    DESC,
-		Year:    2006,
-		Owner:   "ESSENTIAL KAOS",
-		License: "Essential Kaos Open Source License <https://essentialkaos.com/ekol?en>",
+		App:           APP,
+		Version:       VER,
+		Desc:          DESC,
+		Year:          2006,
+		Owner:         "ESSENTIAL KAOS",
+		License:       "Essential Kaos Open Source License <https://essentialkaos.com/ekol>",
+		UpdateChecker: usage.UpdateChecker{"essentialkaos/mdtoc", update.GitHubChecker},
 	}
 
 	about.Render()
