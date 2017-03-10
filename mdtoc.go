@@ -26,7 +26,7 @@ import (
 
 const (
 	APP  = "MDToc"
-	VER  = "0.1.0"
+	VER  = "0.1.1"
 	DESC = "Utility for generating table of contents for markdown files"
 )
 
@@ -116,7 +116,7 @@ func findProperReadme() string {
 // checkFile check markdown file before processing
 func checkFile(file string) {
 	if !fsutil.IsExist(file) {
-		printError("Can't read file %s: file is not exist", file)
+		printError("Can't read file %s: file does not exist", file)
 		os.Exit(1)
 	}
 
