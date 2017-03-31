@@ -26,7 +26,7 @@ import (
 
 const (
 	APP  = "MDToc"
-	VER  = "0.1.1"
+	VER  = "0.1.2"
 	DESC = "Utility for generating table of contents for markdown files"
 )
 
@@ -116,23 +116,19 @@ func findProperReadme() string {
 // checkFile check markdown file before processing
 func checkFile(file string) {
 	if !fsutil.IsExist(file) {
-		printError("Can't read file %s: file does not exist", file)
-		os.Exit(1)
+		printErrorAndExit("Can't read file %s: file does not exist", file)
 	}
 
 	if !fsutil.IsRegular(file) {
-		printError("Can't read file %s: is not a file", file)
-		os.Exit(1)
+		printErrorAndExit("Can't read file %s: is not a file", file)
 	}
 
 	if !fsutil.IsReadable(file) {
-		printError("Can't read file %s: file is not readable", file)
-		os.Exit(1)
+		printErrorAndExit("Can't read file %s: file is not readable", file)
 	}
 
 	if !fsutil.IsNonEmpty(file) {
-		printError("Can't read file %s: file is empty", file)
-		os.Exit(1)
+		printErrorAndExit("Can't read file %s: file is empty", file)
 	}
 }
 
@@ -350,12 +346,18 @@ MAINLOOP:
 
 // printError prints error message to console
 func printError(f string, a ...interface{}) {
-	fmtc.Printf("{r}"+f+"{!}\n", a...)
+	fmtc.Fprintf(os.Stderr, "{r}"+f+"{!}\n", a...)
 }
 
-// printWarn prints warning message to console
+// printError prints warning message to console
 func printWarn(f string, a ...interface{}) {
-	fmtc.Printf("{y}"+f+"{!}\n", a...)
+	fmtc.Fprintf(os.Stderr, "{y}"+f+"{!}\n", a...)
+}
+
+// printErrorAndExit print error mesage and exit with exit code 1
+func printErrorAndExit(f string, a ...interface{}) {
+	printError(f, a...)
+	os.Exit(1)
 }
 
 // ////////////////////////////////////////////////////////////////////////////////// //
