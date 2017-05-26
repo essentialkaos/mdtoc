@@ -13,31 +13,31 @@ import (
 	"regexp"
 	"strings"
 
-	"pkg.re/essentialkaos/ek.v8/arg"
-	"pkg.re/essentialkaos/ek.v8/fmtc"
-	"pkg.re/essentialkaos/ek.v8/fmtutil"
-	"pkg.re/essentialkaos/ek.v8/fsutil"
-	"pkg.re/essentialkaos/ek.v8/strutil"
-	"pkg.re/essentialkaos/ek.v8/usage"
-	"pkg.re/essentialkaos/ek.v8/usage/update"
+	"pkg.re/essentialkaos/ek.v9/fmtc"
+	"pkg.re/essentialkaos/ek.v9/fmtutil"
+	"pkg.re/essentialkaos/ek.v9/fsutil"
+	"pkg.re/essentialkaos/ek.v9/options"
+	"pkg.re/essentialkaos/ek.v9/strutil"
+	"pkg.re/essentialkaos/ek.v9/usage"
+	"pkg.re/essentialkaos/ek.v9/usage/update"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 const (
 	APP  = "MDToc"
-	VER  = "0.2.0"
+	VER  = "0.3.0"
 	DESC = "Utility for generating table of contents for markdown files"
 )
 
 const (
-	ARG_MIN_LEVEL = "m:min-level"
-	ARG_MAX_LEVEL = "M:max-level"
-	ARG_FLAT      = "f:flat"
-	ARG_HTML      = "H:html"
-	ARG_NO_COLOR  = "nc:no-color"
-	ARG_HELP      = "h:help"
-	ARG_VER       = "v:version"
+	OPT_MIN_LEVEL = "m:min-level"
+	OPT_MAX_LEVEL = "M:max-level"
+	OPT_FLAT      = "f:flat"
+	OPT_HTML      = "H:html"
+	OPT_NO_COLOR  = "nc:no-color"
+	OPT_HELP      = "h:help"
+	OPT_VER       = "v:version"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -50,14 +50,14 @@ type Header struct {
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
-var argMap = arg.Map{
-	ARG_MIN_LEVEL: {Type: arg.INT, Value: 1, Min: 1, Max: 6},
-	ARG_MAX_LEVEL: {Type: arg.INT, Value: 6, Min: 1, Max: 6},
-	ARG_FLAT:      {Type: arg.BOOL},
-	ARG_HTML:      {Type: arg.BOOL},
-	ARG_NO_COLOR:  {Type: arg.BOOL},
-	ARG_HELP:      {Type: arg.BOOL, Alias: "u:usage"},
-	ARG_VER:       {Type: arg.BOOL, Alias: "ver"},
+var optMap = options.Map{
+	OPT_MIN_LEVEL: {Type: options.INT, Value: 1, Min: 1, Max: 6},
+	OPT_MAX_LEVEL: {Type: options.INT, Value: 6, Min: 1, Max: 6},
+	OPT_FLAT:      {Type: options.BOOL},
+	OPT_HTML:      {Type: options.BOOL},
+	OPT_NO_COLOR:  {Type: options.BOOL},
+	OPT_HELP:      {Type: options.BOOL, Alias: "u:usage"},
+	OPT_VER:       {Type: options.BOOL, Alias: "ver"},
 }
 
 var anchorRegExp = regexp.MustCompile(`[\s\d\w-]`)
@@ -65,7 +65,7 @@ var anchorRegExp = regexp.MustCompile(`[\s\d\w-]`)
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 func main() {
-	args, errs := arg.Parse(argMap)
+	args, errs := options.Parse(optMap)
 
 	if len(errs) != 0 {
 		for _, err := range errs {
@@ -75,16 +75,16 @@ func main() {
 		os.Exit(1)
 	}
 
-	if arg.GetB(ARG_NO_COLOR) {
+	if options.GetB(OPT_NO_COLOR) {
 		fmtc.DisableColors = true
 	}
 
-	if arg.GetB(ARG_VER) {
+	if options.GetB(OPT_VER) {
 		showAbout()
 		return
 	}
 
-	if arg.GetB(ARG_HELP) {
+	if options.GetB(OPT_HELP) {
 		showUsage()
 		return
 	}
@@ -116,19 +116,19 @@ func findProperReadme() string {
 // checkFile check markdown file before processing
 func checkFile(file string) {
 	if !fsutil.IsExist(file) {
-		printErrorAndExit("Can't read file %s: file does not exist", file)
+		printErrorAndExit("Can't read file %s - file does not exist", file)
 	}
 
 	if !fsutil.IsRegular(file) {
-		printErrorAndExit("Can't read file %s: is not a file", file)
+		printErrorAndExit("Can't read file %s - is not a file", file)
 	}
 
 	if !fsutil.IsReadable(file) {
-		printErrorAndExit("Can't read file %s: file is not readable", file)
+		printErrorAndExit("Can't read file %s - file is not readable", file)
 	}
 
 	if !fsutil.IsNonEmpty(file) {
-		printErrorAndExit("Can't read file %s: file is empty", file)
+		printErrorAndExit("Can't read file %s - file is empty", file)
 	}
 }
 
@@ -137,7 +137,7 @@ func printTOC(file string) {
 	fd, err := os.Open(file)
 
 	if err != nil {
-		printError("Can't read file: %v", err)
+		printError("Can't read file - %v", err)
 	}
 
 	defer fd.Close()
@@ -165,11 +165,11 @@ func printTOC(file string) {
 	var toc string
 
 	switch {
-	case !arg.GetB(ARG_FLAT):
+	case !options.GetB(OPT_FLAT):
 		toc = renderTOC(headers)
-	case arg.GetB(ARG_FLAT) && arg.GetB(ARG_HTML):
+	case options.GetB(OPT_FLAT) && options.GetB(OPT_HTML):
 		toc = renderFlatHTMLTOC(headers)
-	case arg.GetB(ARG_FLAT) && !arg.GetB(ARG_HTML):
+	case options.GetB(OPT_FLAT) && !options.GetB(OPT_HTML):
 		toc = renderFlatTOC(headers)
 	}
 
@@ -242,7 +242,7 @@ func renderFlatHTMLTOC(headers []*Header) string {
 
 // isSuitableHeader return true if header complies defined levels
 func isSuitableHeader(header *Header) bool {
-	if header.Level < arg.GetI(ARG_MIN_LEVEL) || header.Level > arg.GetI(ARG_MAX_LEVEL) {
+	if header.Level < options.GetI(OPT_MIN_LEVEL) || header.Level > options.GetI(OPT_MAX_LEVEL) {
 		return false
 	}
 
@@ -365,13 +365,13 @@ func printErrorAndExit(f string, a ...interface{}) {
 func showUsage() {
 	info := usage.NewInfo("", "file")
 
-	info.AddOption(ARG_FLAT, "Print flat (horizontal) ToC")
-	info.AddOption(ARG_HTML, "Render HTML ToC instead Markdown (works with {g}--flat{!})")
-	info.AddOption(ARG_MIN_LEVEL, "Minimal header level", "1-6")
-	info.AddOption(ARG_MAX_LEVEL, "Maximum header level", "1-6")
-	info.AddOption(ARG_NO_COLOR, "Disable colors in output")
-	info.AddOption(ARG_HELP, "Show this help message")
-	info.AddOption(ARG_VER, "Show version")
+	info.AddOption(OPT_FLAT, "Print flat (horizontal) ToC")
+	info.AddOption(OPT_HTML, "Render HTML ToC instead Markdown (works with {g}--flat{!})")
+	info.AddOption(OPT_MIN_LEVEL, "Minimal header level", "1-6")
+	info.AddOption(OPT_MAX_LEVEL, "Maximum header level", "1-6")
+	info.AddOption(OPT_NO_COLOR, "Disable colors in output")
+	info.AddOption(OPT_HELP, "Show this help message")
+	info.AddOption(OPT_VER, "Show version")
 
 	info.AddExample("readme.md", "Generate table of contents for readme.md")
 	info.AddExample("-m 2 -M 4 readme.md", "Generate table of contents for readme.md with 2-4 level headers")
