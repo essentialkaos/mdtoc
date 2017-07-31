@@ -26,7 +26,7 @@ import (
 
 const (
 	APP  = "MDToc"
-	VER  = "0.3.0"
+	VER  = "0.4.0"
 	DESC = "Utility for generating table of contents for markdown files"
 )
 
@@ -290,8 +290,20 @@ func parseHeaderText(text string) (string, int) {
 	}
 
 	header = strings.TrimRight(header, " ")
+	header = removeMarkdownTags(header)
 
 	return header, level
+}
+
+// removeMarkdownTags remove markdown tags from header
+func removeMarkdownTags(header string) string {
+	for _, r := range "`_*~" {
+		if strings.Count(header, string(r))%2 == 0 {
+			header = strings.Replace(header, string(r), "", -1)
+		}
+	}
+
+	return header
 }
 
 // getMarkdownListPrefix return list prefix for given level
