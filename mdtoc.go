@@ -24,12 +24,14 @@ import (
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
+// App info
 const (
 	APP  = "MDToc"
 	VER  = "0.4.0"
 	DESC = "Utility for generating table of contents for markdown files"
 )
 
+// Options
 const (
 	OPT_MIN_LEVEL = "m:min-level"
 	OPT_MAX_LEVEL = "M:max-level"
@@ -42,6 +44,7 @@ const (
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
+// Header contains info about header
 type Header struct {
 	Level int    // Header level 1-7
 	Text  string // Header text
