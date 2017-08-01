@@ -24,12 +24,14 @@ import (
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
+// App info
 const (
 	APP  = "MDToc"
-	VER  = "0.3.0"
+	VER  = "0.4.0"
 	DESC = "Utility for generating table of contents for markdown files"
 )
 
+// Options
 const (
 	OPT_MIN_LEVEL = "m:min-level"
 	OPT_MAX_LEVEL = "M:max-level"
@@ -42,6 +44,7 @@ const (
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
+// Header contains info about header
 type Header struct {
 	Level int    // Header level 1-7
 	Text  string // Header text
@@ -290,8 +293,20 @@ func parseHeaderText(text string) (string, int) {
 	}
 
 	header = strings.TrimRight(header, " ")
+	header = removeMarkdownTags(header)
 
 	return header, level
+}
+
+// removeMarkdownTags remove markdown tags from header
+func removeMarkdownTags(header string) string {
+	for _, r := range "`_*~" {
+		if strings.Count(header, string(r))%2 == 0 {
+			header = strings.Replace(header, string(r), "", -1)
+		}
+	}
+
+	return header
 }
 
 // getMarkdownListPrefix return list prefix for given level
