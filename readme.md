@@ -1,4 +1,4 @@
-# MDToc [![Build Status](https://travis-ci.org/essentialkaos/mdtoc.svg?branch=master)](https://travis-ci.org/essentialkaos/mdtoc) [![Go Report Card](https://goreportcard.com/badge/github.com/essentialkaos/mdtoc)](https://goreportcard.com/report/github.com/essentialkaos/mdtoc) [![License](https://gh.kaos.io/ekol.svg)](https://essentialkaos.com/ekol)
+# MDToc [![Build Status](https://travis-ci.org/essentialkaos/mdtoc.svg?branch=master)](https://travis-ci.org/essentialkaos/mdtoc) [![Go Report Card](https://goreportcard.com/badge/github.com/essentialkaos/mdtoc)](https://goreportcard.com/report/github.com/essentialkaos/mdtoc) [![codebeat badge](https://codebeat.co/badges/196d721e-00ad-4dff-9032-9b5bbd11b723)](https://codebeat.co/projects/github-com-essentialkaos-mdtoc-master) [![License](https://gh.kaos.io/ekol.svg)](https://essentialkaos.com/ekol)
 
 `MDToc` is simple utility for generating table of contents for markdown files.
 
@@ -18,7 +18,7 @@ Before the initial install allows git to use redirects for [pkg.re](https://gith
 git config --global http.https://pkg.re.followRedirects true
 ```
 
-To build the MDToc from scratch, make sure you have a working Go 1.6+ workspace ([instructions](https://golang.org/doc/install)), then:
+To build the MDToc from scratch, make sure you have a working Go 1.7+ workspace ([instructions](https://golang.org/doc/install)), then:
 
 ```
 go get github.com/essentialkaos/mdtoc
