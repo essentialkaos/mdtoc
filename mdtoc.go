@@ -16,6 +16,7 @@ import (
 	"pkg.re/essentialkaos/ek.v9/fmtc"
 	"pkg.re/essentialkaos/ek.v9/fmtutil"
 	"pkg.re/essentialkaos/ek.v9/fsutil"
+	"pkg.re/essentialkaos/ek.v9/mathutil"
 	"pkg.re/essentialkaos/ek.v9/options"
 	"pkg.re/essentialkaos/ek.v9/strutil"
 	"pkg.re/essentialkaos/ek.v9/usage"
@@ -27,7 +28,7 @@ import (
 // App info
 const (
 	APP  = "MDToc"
-	VER  = "0.4.0"
+	VER  = "1.0.0"
 	DESC = "Utility for generating table of contents for markdown files"
 )
 
@@ -64,6 +65,7 @@ var optMap = options.Map{
 }
 
 var anchorRegExp = regexp.MustCompile(`[\s\d\w-]`)
+var badgeRegExp = regexp.MustCompile(`\[!\[[^\]]*\]\((.*?)\s*("(?:.*[^"])")?\s*\)\]\((.*?)\s*("(?:.*[^"])")?\s*\)`)
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
@@ -107,7 +109,7 @@ func main() {
 	}
 
 	checkFile(file)
-	printTOC(file)
+	process(file)
 }
 
 // findProperReadme try to find readme file in current directory
@@ -135,12 +137,24 @@ func checkFile(file string) {
 	}
 }
 
-// printTOC collect headers and print ToC for given markdown file
-func printTOC(file string) {
+// process start file processing
+func process(file string) {
+	headers := extractHeaders(file)
+
+	if len(headers) == 0 {
+		printWarn("Headers not found in given file")
+		return
+	}
+
+	printTOC(headers)
+}
+
+// extractHeaders extract headers from markdown file
+func extractHeaders(file string) []*Header {
 	fd, err := os.Open(file)
 
 	if err != nil {
-		printError("Can't read file - %v", err)
+		printErrorAndExit("File reading error: %v", err)
 	}
 
 	defer fd.Close()
@@ -160,11 +174,11 @@ func printTOC(file string) {
 		headers = append(headers, parseHeader(line))
 	}
 
-	if len(headers) == 0 {
-		printWarn("Headers not found in given file")
-		return
-	}
+	return headers
+}
 
+// printTOC collect headers and print ToC for given markdown file
+func printTOC(headers []*Header) {
 	var toc string
 
 	switch {
@@ -190,6 +204,8 @@ func printTOC(file string) {
 func renderTOC(headers []*Header) string {
 	var toc []string
 
+	minLevel := getMinLevel(headers)
+
 	for _, header := range headers {
 		if !isSuitableHeader(header) {
 			continue
@@ -197,7 +213,7 @@ func renderTOC(headers []*Header) string {
 
 		toc = append(toc, fmtc.Sprintf(
 			"%s [%s](%s)",
-			getMarkdownListPrefix(header.Level),
+			getMarkdownListPrefix(header.Level, minLevel),
 			header.Text, header.Link,
 		))
 	}
@@ -257,10 +273,10 @@ func parseHeader(text string) *Header {
 	header := &Header{}
 
 	headerText := strings.TrimRight(text, " ")
-	headerText = removeLinks(headerText)
+	headerText = removeBadges(headerText)
 
 	header.Text, header.Level = parseHeaderText(headerText)
-	header.Link = makeLink(header.Text)
+	header.Link = makeLink(headerText)
 
 	return header
 }
@@ -269,6 +285,7 @@ func parseHeader(text string) *Header {
 func makeLink(text string) string {
 	result := text
 
+	result = strings.TrimLeft(result, "# ")
 	result = strings.Replace(result, " ", "-", -1)
 	result = strings.ToLower(result)
 	result = strings.Join(anchorRegExp.FindAllString(result, -1), "")
@@ -278,20 +295,8 @@ func makeLink(text string) string {
 
 // parseHeaderText parse text and return level and header
 func parseHeaderText(text string) (string, int) {
-	var level = 0
-	var header = ""
-
-	for i, s := range text {
-		if s == '#' {
-			level++
-			continue
-		}
-
-		header = strings.TrimLeft(strutil.Substr(text, i, 9999), " ")
-
-		break
-	}
-
+	level := strutil.PrefixSize(text, '#')
+	header := strings.TrimLeft(text, "# ")
 	header = strings.TrimRight(header, " ")
 	header = removeMarkdownTags(header)
 
@@ -310,53 +315,28 @@ func removeMarkdownTags(header string) string {
 }
 
 // getMarkdownListPrefix return list prefix for given level
-func getMarkdownListPrefix(level int) string {
-	return strings.Repeat("  ", level-1) + "*"
+func getMarkdownListPrefix(level, minLevel int) string {
+	return strings.Repeat("  ", level-minLevel) + "*"
 }
 
-// removeLinks remove links from text
-func removeLinks(text string) string {
-	result := text
+// getMinLevel return minimal header level
+func getMinLevel(headers []*Header) int {
+	result := 6
 
-	var (
-		startLink int
-		innerLink bool
-	)
-
-MAINLOOP:
-	for {
-		if !strings.Contains(result, "](") {
-			break
+	for _, header := range headers {
+		if !isSuitableHeader(header) {
+			continue
 		}
 
-		startLink = 0
-
-		for i, s := range result {
-
-			if s == '[' {
-				if startLink != 0 {
-					continue
-				}
-
-				startLink = i
-				innerLink = strutil.Substr(result, i+1, i+2) == "!"
-
-				continue
-
-			} else if s == ')' {
-				if innerLink {
-					innerLink = false
-					continue
-				} else {
-					result = result[0:startLink] + result[i+1:]
-					result = strutil.Substr(result, 0, startLink) + strutil.Substr(result, i, 9999)
-					continue MAINLOOP
-				}
-			}
-		}
+		result = mathutil.Min(result, header.Level)
 	}
 
 	return result
+}
+
+// removeBadges remove badges from header
+func removeBadges(text string) string {
+	return badgeRegExp.ReplaceAllString(text, "")
 }
 
 // printError prints error message to console
