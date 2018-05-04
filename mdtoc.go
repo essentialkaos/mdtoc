@@ -2,7 +2,7 @@ package main
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
-//                     Copyright (c) 2009-2017 ESSENTIAL KAOS                         //
+//                     Copyright (c) 2009-2018 ESSENTIAL KAOS                         //
 //        Essential Kaos Open Source License <https://essentialkaos.com/ekol>         //
 //                                                                                    //
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -28,7 +28,7 @@ import (
 // App info
 const (
 	APP  = "MDToc"
-	VER  = "1.0.0"
+	VER  = "1.1.0"
 	DESC = "Utility for generating table of contents for markdown files"
 )
 
@@ -80,9 +80,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if options.GetB(OPT_NO_COLOR) {
-		fmtc.DisableColors = true
-	}
+	configureUI()
 
 	if options.GetB(OPT_VER) {
 		showAbout()
@@ -110,6 +108,17 @@ func main() {
 
 	checkFile(file)
 	process(file)
+}
+
+// configureUI configure user interface
+func configureUI() {
+	if options.GetB(OPT_NO_COLOR) {
+		fmtc.DisableColors = true
+	}
+
+	fmtutil.SeparatorFullscreen = true
+	fmtutil.SeparatorSymbol = "–"
+	fmtutil.SeparatorColorTag = "{s-}"
 }
 
 // findProperReadme try to find readme file in current directory

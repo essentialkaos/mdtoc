@@ -1,12 +1,15 @@
-# MDToc [![Build Status](https://travis-ci.org/essentialkaos/mdtoc.svg?branch=master)](https://travis-ci.org/essentialkaos/mdtoc) [![Go Report Card](https://goreportcard.com/badge/github.com/essentialkaos/mdtoc)](https://goreportcard.com/report/github.com/essentialkaos/mdtoc) [![codebeat badge](https://codebeat.co/badges/196d721e-00ad-4dff-9032-9b5bbd11b723)](https://codebeat.co/projects/github-com-essentialkaos-mdtoc-master) [![License](https://gh.kaos.io/ekol.svg)](https://essentialkaos.com/ekol)
+<p align="center"><a href="#readme"><img src="https://gh.kaos.st/mdtoc.svg"/></a></p>
 
-`MDToc` is simple utility for generating table of contents for markdown files.
+<p align="center"><a href="#installation">Installation</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#contributing">Contributing</a> • <a href="#license">License</a></p>
 
-* [Installation](#installation)
-* [Usage](#usage)
-* [Build Status](#build-status)
-* [Contributing](#contributing)
-* [License](#license)
+<p align="center">
+  <a href="https://travis-ci.org/essentialkaos/mdtoc"><img src="https://travis-ci.org/essentialkaos/mdtoc.svg"></a>
+  <a href="https://goreportcard.com/report/github.com/essentialkaos/mdtoc"><img src="https://goreportcard.com/badge/github.com/essentialkaos/mdtoc"></a>
+  <a href="https://codebeat.co/projects/github-com-essentialkaos-mdtoc-master"><img alt="codebeat badge" src="https://codebeat.co/badges/196d721e-00ad-4dff-9032-9b5bbd11b723" /></a>
+  <a href="https://essentialkaos.com/ekol"><img src="https://gh.kaos.st/ekol.svg"></a>
+</p>
+
+`mdtoc` is simple utility for generating table of contents for markdown files.
 
 ### Installation
 
@@ -18,7 +21,7 @@ Before the initial install allows git to use redirects for [pkg.re](https://gith
 git config --global http.https://pkg.re.followRedirects true
 ```
 
-To build the MDToc from scratch, make sure you have a working Go 1.7+ workspace ([instructions](https://golang.org/doc/install)), then:
+To build the MDToc from scratch, make sure you have a working Go 1.8+ workspace ([instructions](https://golang.org/doc/install)), then:
 
 ```
 go get github.com/essentialkaos/mdtoc
@@ -32,7 +35,7 @@ go get -u github.com/essentialkaos/mdtoc
 
 #### Prebuilt binaries
 
-You can download prebuilt binaries for Linux and OS X from [EK Apps Repository](https://apps.kaos.io/mdtoc/latest).
+You can download prebuilt binaries for Linux and OS X from [EK Apps Repository](https://apps.kaos.st/mdtoc/latest).
 
 ### Usage
 
@@ -74,4 +77,4 @@ Before contributing to this project please read our [Contributing Guidelines](ht
 
 [EKOL](https://essentialkaos.com/ekol)
 
-<p align="center"><a href="https://essentialkaos.com"><img src="https://gh.kaos.io/ekgh.svg"/></a></p>
+<p align="center"><a href="https://essentialkaos.com"><img src="https://gh.kaos.st/ekgh.svg"/></a></p>
