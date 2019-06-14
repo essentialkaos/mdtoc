@@ -2,7 +2,7 @@ package main
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
-//                     Copyright (c) 2009-2018 ESSENTIAL KAOS                         //
+//                     Copyright (c) 2009-2019 ESSENTIAL KAOS                         //
 //        Essential Kaos Open Source License <https://essentialkaos.com/ekol>         //
 //                                                                                    //
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -13,14 +13,14 @@ import (
 	"regexp"
 	"strings"
 
-	"pkg.re/essentialkaos/ek.v9/fmtc"
-	"pkg.re/essentialkaos/ek.v9/fmtutil"
-	"pkg.re/essentialkaos/ek.v9/fsutil"
-	"pkg.re/essentialkaos/ek.v9/mathutil"
-	"pkg.re/essentialkaos/ek.v9/options"
-	"pkg.re/essentialkaos/ek.v9/strutil"
-	"pkg.re/essentialkaos/ek.v9/usage"
-	"pkg.re/essentialkaos/ek.v9/usage/update"
+	"pkg.re/essentialkaos/ek.v10/fmtc"
+	"pkg.re/essentialkaos/ek.v10/fmtutil"
+	"pkg.re/essentialkaos/ek.v10/fsutil"
+	"pkg.re/essentialkaos/ek.v10/mathutil"
+	"pkg.re/essentialkaos/ek.v10/options"
+	"pkg.re/essentialkaos/ek.v10/strutil"
+	"pkg.re/essentialkaos/ek.v10/usage"
+	"pkg.re/essentialkaos/ek.v10/usage/update"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -28,7 +28,7 @@ import (
 // App info
 const (
 	APP  = "MDToc"
-	VER  = "1.1.0"
+	VER  = "1.2.0"
 	DESC = "Utility for generating table of contents for markdown files"
 )
 
@@ -110,7 +110,7 @@ func main() {
 	process(file)
 }
 
-// configureUI configure user interface
+// configureUI configures user interface
 func configureUI() {
 	if options.GetB(OPT_NO_COLOR) {
 		fmtc.DisableColors = true
@@ -121,13 +121,13 @@ func configureUI() {
 	fmtutil.SeparatorColorTag = "{s-}"
 }
 
-// findProperReadme try to find readme file in current directory
+// findProperReadme tries to find readme file in current directory
 func findProperReadme() string {
 	file := fsutil.ProperPath("FRS", []string{"README.md", "readme.md"})
 	return file
 }
 
-// checkFile check markdown file before processing
+// checkFile checks markdown file before processing
 func checkFile(file string) {
 	if !fsutil.IsExist(file) {
 		printErrorAndExit("Can't read file %s - file does not exist", file)
@@ -146,7 +146,7 @@ func checkFile(file string) {
 	}
 }
 
-// process start file processing
+// process starts file processing
 func process(file string) {
 	headers := extractHeaders(file)
 
@@ -158,7 +158,7 @@ func process(file string) {
 	printTOC(headers)
 }
 
-// extractHeaders extract headers from markdown file
+// extractHeaders extracts headers from markdown file
 func extractHeaders(file string) []*Header {
 	fd, err := os.Open(file)
 
@@ -186,7 +186,7 @@ func extractHeaders(file string) []*Header {
 	return headers
 }
 
-// printTOC collect headers and print ToC for given markdown file
+// printTOC collects headers and print ToC for given markdown file
 func printTOC(headers []*Header) {
 	var toc string
 
@@ -209,7 +209,7 @@ func printTOC(headers []*Header) {
 	fmtutil.Separator(false)
 }
 
-// renderTOC render headers as default (vertical) markdown ToC
+// renderTOC renders headers as default (vertical) markdown ToC
 func renderTOC(headers []*Header) string {
 	var toc []string
 
@@ -230,7 +230,7 @@ func renderTOC(headers []*Header) string {
 	return strings.Join(toc, "\n")
 }
 
-// renderFlatTOC render headers as flat (horizontal) markdown ToC
+// renderFlatTOC renders headers as flat (horizontal) markdown ToC
 func renderFlatTOC(headers []*Header) string {
 	var toc []string
 
@@ -249,7 +249,7 @@ func renderFlatTOC(headers []*Header) string {
 	return strings.Join(toc, " • ")
 }
 
-// renderFlatTOC render headers as flat (horizontal) HTML ToC
+// renderFlatTOC renders headers as flat (horizontal) HTML ToC
 func renderFlatHTMLTOC(headers []*Header) string {
 	var toc []string
 
@@ -268,7 +268,7 @@ func renderFlatHTMLTOC(headers []*Header) string {
 	return "<p align=\"center\">" + strings.Join(toc, " • ") + "</p>"
 }
 
-// isSuitableHeader return true if header complies defined levels
+// isSuitableHeader returns true if header complies defined levels
 func isSuitableHeader(header *Header) bool {
 	if header.Level < options.GetI(OPT_MIN_LEVEL) || header.Level > options.GetI(OPT_MAX_LEVEL) {
 		return false
@@ -277,7 +277,7 @@ func isSuitableHeader(header *Header) bool {
 	return true
 }
 
-// parseHeader parse header text and return header struct
+// parseHeader parses header text and return header struct
 func parseHeader(text string) *Header {
 	header := &Header{}
 
@@ -290,7 +290,7 @@ func parseHeader(text string) *Header {
 	return header
 }
 
-// makeLink convert header text to anchor link name
+// makeLink converts header text to anchor link name
 func makeLink(text string) string {
 	result := text
 
@@ -302,7 +302,7 @@ func makeLink(text string) string {
 	return "#" + result
 }
 
-// parseHeaderText parse text and return level and header
+// parseHeaderText parses text and return level and header
 func parseHeaderText(text string) (string, int) {
 	level := strutil.PrefixSize(text, '#')
 	header := strings.TrimLeft(text, "# ")
@@ -312,7 +312,7 @@ func parseHeaderText(text string) (string, int) {
 	return header, level
 }
 
-// removeMarkdownTags remove markdown tags from header
+// removeMarkdownTags removes markdown tags from header
 func removeMarkdownTags(header string) string {
 	for _, r := range "`_*~" {
 		if strings.Count(header, string(r))%2 == 0 {
@@ -323,12 +323,12 @@ func removeMarkdownTags(header string) string {
 	return header
 }
 
-// getMarkdownListPrefix return list prefix for given level
+// getMarkdownListPrefix returns list prefix for given level
 func getMarkdownListPrefix(level, minLevel int) string {
 	return strings.Repeat("  ", level-minLevel) + "*"
 }
 
-// getMinLevel return minimal header level
+// getMinLevel returns minimal header level
 func getMinLevel(headers []*Header) int {
 	result := 6
 
@@ -343,7 +343,7 @@ func getMinLevel(headers []*Header) int {
 	return result
 }
 
-// removeBadges remove badges from header
+// removeBadges removes badges from header
 func removeBadges(text string) string {
 	return badgeRegExp.ReplaceAllString(text, "")
 }
@@ -358,7 +358,7 @@ func printWarn(f string, a ...interface{}) {
 	fmtc.Fprintf(os.Stderr, "{y}"+f+"{!}\n", a...)
 }
 
-// printErrorAndExit print error mesage and exit with exit code 1
+// printErrorAndExit prints error mesage and exit with exit code 1
 func printErrorAndExit(f string, a ...interface{}) {
 	printError(f, a...)
 	os.Exit(1)
@@ -366,6 +366,7 @@ func printErrorAndExit(f string, a ...interface{}) {
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
+// showUsage shows usage info
 func showUsage() {
 	info := usage.NewInfo("", "file")
 
@@ -383,6 +384,7 @@ func showUsage() {
 	info.Render()
 }
 
+// showAbout shows info about version
 func showAbout() {
 	about := &usage.About{
 		App:           APP,
