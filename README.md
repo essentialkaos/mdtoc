@@ -9,6 +9,8 @@
 
 <p align="center"><a href="#installation">Installation</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#contributing">Contributing</a> • <a href="#license">License</a></p>
 
+<br/>
+
 `mdtoc` is simple utility for generating table of contents for markdown files.
 
 ### Installation
