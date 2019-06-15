@@ -1,13 +1,15 @@
 <p align="center"><a href="#readme"><img src="https://gh.kaos.st/mdtoc.svg"/></a></p>
 
-<p align="center"><a href="#installation">Installation</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#contributing">Contributing</a> • <a href="#license">License</a></p>
-
 <p align="center">
   <a href="https://travis-ci.org/essentialkaos/mdtoc"><img src="https://travis-ci.org/essentialkaos/mdtoc.svg"></a>
   <a href="https://goreportcard.com/report/github.com/essentialkaos/mdtoc"><img src="https://goreportcard.com/badge/github.com/essentialkaos/mdtoc"></a>
   <a href="https://codebeat.co/projects/github-com-essentialkaos-mdtoc-master"><img alt="codebeat badge" src="https://codebeat.co/badges/196d721e-00ad-4dff-9032-9b5bbd11b723" /></a>
   <a href="https://essentialkaos.com/ekol"><img src="https://gh.kaos.st/ekol.svg"></a>
 </p>
+
+<p align="center"><a href="#installation">Installation</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#contributing">Contributing</a> • <a href="#license">License</a></p>
+
+<br/>
 
 `mdtoc` is simple utility for generating table of contents for markdown files.
 
