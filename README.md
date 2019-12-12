@@ -1,7 +1,7 @@
 <p align="center"><a href="#readme"><img src="https://gh.kaos.st/mdtoc.svg"/></a></p>
 
 <p align="center">
-  <a href="https://travis-ci.org/essentialkaos/mdtoc"><img src="https://travis-ci.org/essentialkaos/mdtoc.svg"></a>
+  <a href="https://travis-ci.com/essentialkaos/mdtoc"><img src="https://travis-ci.com/essentialkaos/mdtoc.svg"></a>
   <a href="https://goreportcard.com/report/github.com/essentialkaos/mdtoc"><img src="https://goreportcard.com/badge/github.com/essentialkaos/mdtoc"></a>
   <a href="https://codebeat.co/projects/github-com-essentialkaos-mdtoc-master"><img alt="codebeat badge" src="https://codebeat.co/badges/196d721e-00ad-4dff-9032-9b5bbd11b723" /></a>
   <a href="https://essentialkaos.com/ekol"><img src="https://gh.kaos.st/ekol.svg"></a>
@@ -37,7 +37,11 @@ go get -u github.com/essentialkaos/mdtoc
 
 #### Prebuilt binaries
 
-You can download prebuilt binaries for Linux and OS X from [EK Apps Repository](https://apps.kaos.st/mdtoc/latest).
+You can download prebuilt binaries for Linux and OS X from [EK Apps Repository](https://apps.kaos.st/mdtoc/latest):
+
+```
+bash <(curl -fsSL https://apps.kaos.st/get) mdtoc
+```
 
 ### Usage
 
@@ -68,8 +72,8 @@ Examples
 
 | Branch | Status |
 |------------|--------|
-| `master` | [![Build Status](https://travis-ci.org/essentialkaos/mdtoc.svg?branch=master)](https://travis-ci.org/essentialkaos/mdtoc) |
-| `develop` | [![Build Status](https://travis-ci.org/essentialkaos/mdtoc.svg?branch=develop)](https://travis-ci.org/essentialkaos/mdtoc) |
+| `master` | [![Build Status](https://travis-ci.com/essentialkaos/mdtoc.svg?branch=master)](https://travis-ci.com/essentialkaos/mdtoc) |
+| `develop` | [![Build Status](https://travis-ci.com/essentialkaos/mdtoc.svg?branch=develop)](https://travis-ci.com/essentialkaos/mdtoc) |
 
 ### Contributing
 
