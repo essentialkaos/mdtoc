@@ -37,7 +37,11 @@ go get -u github.com/essentialkaos/mdtoc
 
 #### Prebuilt binaries
 
-You can download prebuilt binaries for Linux and OS X from [EK Apps Repository](https://apps.kaos.st/mdtoc/latest).
+You can download prebuilt binaries for Linux and OS X from [EK Apps Repository](https://apps.kaos.st/mdtoc/latest):
+
+```
+bash <(curl -fsSL https://apps.kaos.st/get) mdtoc
+```
 
 ### Usage
 
