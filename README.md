@@ -2,6 +2,7 @@
 
 <p align="center">
   <a href="https://travis-ci.com/essentialkaos/mdtoc"><img src="https://travis-ci.com/essentialkaos/mdtoc.svg"></a>
+  <a href="https://github.com/essentialkaos/mdtoc/actions?query=workflow%3ACodeQL"><img src="https://github.com/essentialkaos/mdtoc/workflows/CodeQL/badge.svg" /></a>
   <a href="https://goreportcard.com/report/github.com/essentialkaos/mdtoc"><img src="https://goreportcard.com/badge/github.com/essentialkaos/mdtoc"></a>
   <a href="https://codebeat.co/projects/github-com-essentialkaos-mdtoc-master"><img alt="codebeat badge" src="https://codebeat.co/badges/196d721e-00ad-4dff-9032-9b5bbd11b723" /></a>
   <a href="https://essentialkaos.com/ekol"><img src="https://gh.kaos.st/ekol.svg"></a>
