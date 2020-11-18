@@ -1,7 +1,7 @@
 <p align="center"><a href="#readme"><img src="https://gh.kaos.st/mdtoc.svg"/></a></p>
 
 <p align="center">
-  <a href="https://travis-ci.com/essentialkaos/mdtoc"><img src="https://travis-ci.com/essentialkaos/mdtoc.svg"></a>
+  <a href="https://github.com/essentialkaos/mdtoc/actions"><img src="https://github.com/essentialkaos/mdtoc/workflows/CI/badge.svg" alt="GitHub Actions Status" /></a>
   <a href="https://github.com/essentialkaos/mdtoc/actions?query=workflow%3ACodeQL"><img src="https://github.com/essentialkaos/mdtoc/workflows/CodeQL/badge.svg" /></a>
   <a href="https://goreportcard.com/report/github.com/essentialkaos/mdtoc"><img src="https://goreportcard.com/badge/github.com/essentialkaos/mdtoc"></a>
   <a href="https://codebeat.co/projects/github-com-essentialkaos-mdtoc-master"><img alt="codebeat badge" src="https://codebeat.co/badges/196d721e-00ad-4dff-9032-9b5bbd11b723" /></a>
@@ -18,13 +18,7 @@
 
 #### From source
 
-Before the initial install allows git to use redirects for [pkg.re](https://github.com/essentialkaos/pkgre) service (reason why you should do this described [here](https://github.com/essentialkaos/pkgre#git-support)):
-
-```
-git config --global http.https://pkg.re.followRedirects true
-```
-
-To build the MDToc from scratch, make sure you have a working Go 1.12+ workspace ([instructions](https://golang.org/doc/install)), then:
+To build the MDToc from scratch, make sure you have a working Go 1.14+ workspace ([instructions](https://golang.org/doc/install)), then:
 
 ```
 go get github.com/essentialkaos/mdtoc
@@ -73,8 +67,8 @@ Examples
 
 | Branch | Status |
 |------------|--------|
-| `master` | [![Build Status](https://travis-ci.com/essentialkaos/mdtoc.svg?branch=master)](https://travis-ci.com/essentialkaos/mdtoc) |
-| `develop` | [![Build Status](https://travis-ci.com/essentialkaos/mdtoc.svg?branch=develop)](https://travis-ci.com/essentialkaos/mdtoc) |
+| `master` | [![CI](https://github.com/essentialkaos/mdtoc/workflows/CI/badge.svg?branch=master)](https://github.com/essentialkaos/mdtoc/actions) |
+| `develop` | [![CI](https://github.com/essentialkaos/mdtoc/workflows/CI/badge.svg?branch=develop)](https://github.com/essentialkaos/mdtoc/actions) |
 
 ### Contributing
 
