@@ -28,7 +28,7 @@ import (
 // App info
 const (
 	APP  = "MDToc"
-	VER  = "1.2.3"
+	VER  = "1.2.4"
 	DESC = "Utility for generating table of contents for markdown files"
 )
 
@@ -101,9 +101,8 @@ func main() {
 			showUsage()
 			return
 		}
-
 	} else {
-		file = args[0]
+		file = args.Get(0).Clean().String()
 	}
 
 	checkFile(file)
