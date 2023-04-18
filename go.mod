@@ -1,6 +1,6 @@
 module github.com/essentialkaos/mdtoc
 
-go 1.17
+go 1.18
 
 require (
 	github.com/essentialkaos/depsy v1.0.0
