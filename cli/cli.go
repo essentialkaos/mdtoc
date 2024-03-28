@@ -20,14 +20,15 @@ import (
 	"github.com/essentialkaos/ek/v12/mathutil"
 	"github.com/essentialkaos/ek/v12/options"
 	"github.com/essentialkaos/ek/v12/strutil"
+	"github.com/essentialkaos/ek/v12/support"
+	"github.com/essentialkaos/ek/v12/support/deps"
+	"github.com/essentialkaos/ek/v12/terminal/tty"
 	"github.com/essentialkaos/ek/v12/usage"
 	"github.com/essentialkaos/ek/v12/usage/completion/bash"
 	"github.com/essentialkaos/ek/v12/usage/completion/fish"
 	"github.com/essentialkaos/ek/v12/usage/completion/zsh"
 	"github.com/essentialkaos/ek/v12/usage/man"
 	"github.com/essentialkaos/ek/v12/usage/update"
-
-	"github.com/essentialkaos/mdtoc/cli/support"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -35,7 +36,7 @@ import (
 // App info
 const (
 	APP  = "MDToc"
-	VER  = "1.2.5"
+	VER  = "1.2.6"
 	DESC = "Utility for generating table of contents for markdown files"
 )
 
@@ -72,7 +73,7 @@ var optMap = options.Map{
 	OPT_HTML:      {Type: options.BOOL},
 	OPT_NO_COLOR:  {Type: options.BOOL},
 	OPT_HELP:      {Type: options.BOOL},
-	OPT_VER:       {Type: options.BOOL},
+	OPT_VER:       {Type: options.MIXED},
 
 	OPT_VERB_VER:     {Type: options.BOOL},
 	OPT_COMPLETION:   {},
@@ -86,6 +87,8 @@ var badgeRegExp = regexp.MustCompile(`\[!\[[^\]]*\]\((.*?)\s*("(?:.*[^"])")?\s*\
 
 // Init is main function
 func Init(gitRev string, gomod []byte) {
+	preConfigureUI()
+
 	args, errs := options.Parse(optMap)
 
 	if len(errs) != 0 {
@@ -100,17 +103,21 @@ func Init(gitRev string, gomod []byte) {
 
 	switch {
 	case options.Has(OPT_COMPLETION):
-		os.Exit(genCompletion())
+		os.Exit(printCompletion())
 	case options.Has(OPT_GENERATE_MAN):
-		os.Exit(genMan())
+		printMan()
+		os.Exit(0)
 	case options.GetB(OPT_VER):
-		showAbout(gitRev)
+		genAbout(gitRev).Print(options.GetS(OPT_VER))
 		os.Exit(0)
 	case options.GetB(OPT_VERB_VER):
-		support.ShowSupportInfo(APP, VER, gitRev, gomod)
+		support.Collect(APP, VER).
+			WithRevision(gitRev).
+			WithDeps(deps.Extract(gomod)).
+			Print()
 		os.Exit(0)
 	case options.GetB(OPT_HELP):
-		showUsage()
+		genUsage().Print()
 		os.Exit(0)
 	}
 
@@ -120,7 +127,7 @@ func Init(gitRev string, gomod []byte) {
 		file = findProperReadme()
 
 		if file == "" {
-			showUsage()
+			genUsage().Print()
 			os.Exit(0)
 		}
 	} else {
@@ -129,6 +136,13 @@ func Init(gitRev string, gomod []byte) {
 
 	checkFile(file)
 	process(file)
+}
+
+// preConfigureUI preconfigures UI based on information about user terminal
+func preConfigureUI() {
+	if !tty.IsTTY() {
+		fmtc.DisableColors = true
+	}
 }
 
 // configureUI configures user interface
@@ -150,20 +164,10 @@ func findProperReadme() string {
 
 // checkFile checks markdown file before processing
 func checkFile(file string) {
-	if !fsutil.IsExist(file) {
-		printErrorAndExit("Can't read file %s - file does not exist", file)
-	}
+	err := fsutil.ValidatePerms("FRS", file)
 
-	if !fsutil.IsRegular(file) {
-		printErrorAndExit("Can't read file %s - is not a file", file)
-	}
-
-	if !fsutil.IsReadable(file) {
-		printErrorAndExit("Can't read file %s - file is not readable", file)
-	}
-
-	if !fsutil.IsNonEmpty(file) {
-		printErrorAndExit("Can't read file %s - file is empty", file)
+	if err != nil {
+		printErrorAndExit(err.Error())
 	}
 }
 
@@ -316,7 +320,7 @@ func makeLink(text string) string {
 	result := text
 
 	result = strings.TrimLeft(result, "# ")
-	result = strings.Replace(result, " ", "-", -1)
+	result = strings.ReplaceAll(result, " ", "-")
 	result = strings.ToLower(result)
 	result = strings.Join(anchorRegExp.FindAllString(result, -1), "")
 
@@ -337,7 +341,7 @@ func parseHeaderText(text string) (string, int) {
 func removeMarkdownTags(header string) string {
 	for _, r := range "`_*~" {
 		if strings.Count(header, string(r))%2 == 0 {
-			header = strings.Replace(header, string(r), "", -1)
+			header = strings.ReplaceAll(header, string(r), "")
 		}
 	}
 
@@ -379,7 +383,7 @@ func printWarn(f string, a ...interface{}) {
 	fmtc.Fprintf(os.Stderr, "{y}"+f+"{!}\n", a...)
 }
 
-// printErrorAndExit prints error mesage and exit with exit code 1
+// printErrorAndExit prints error message and exit with exit code 1
 func printErrorAndExit(f string, a ...interface{}) {
 	printError(f, a...)
 	os.Exit(1)
@@ -387,27 +391,17 @@ func printErrorAndExit(f string, a ...interface{}) {
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
-// showUsage prints usage info
-func showUsage() {
-	genUsage().Render()
-}
-
-// showAbout prints info about version
-func showAbout(gitRev string) {
-	genAbout(gitRev).Render()
-}
-
-// genCompletion generates completion for different shells
-func genCompletion() int {
+// printCompletion prints completion for given shell
+func printCompletion() int {
 	info := genUsage()
 
 	switch options.GetS(OPT_COMPLETION) {
 	case "bash":
-		fmt.Printf(bash.Generate(info, "mdtoc"))
+		fmt.Print(bash.Generate(info, "mdtoc"))
 	case "fish":
-		fmt.Printf(fish.Generate(info, "mdtoc"))
+		fmt.Print(fish.Generate(info, "mdtoc"))
 	case "zsh":
-		fmt.Printf(zsh.Generate(info, optMap, "mdtoc"))
+		fmt.Print(zsh.Generate(info, optMap, "mdtoc"))
 	default:
 		return 1
 	}
@@ -415,16 +409,14 @@ func genCompletion() int {
 	return 0
 }
 
-// genMan generates man page
-func genMan() int {
+// printMan prints man page
+func printMan() {
 	fmt.Println(
 		man.Generate(
 			genUsage(),
 			genAbout(""),
 		),
 	)
-
-	return 0
 }
 
 // genUsage generates usage info
@@ -448,17 +440,17 @@ func genUsage() *usage.Info {
 // genAbout generates info about version
 func genAbout(gitRev string) *usage.About {
 	about := &usage.About{
-		App:           APP,
-		Version:       VER,
-		Desc:          DESC,
-		Year:          2006,
-		Owner:         "ESSENTIAL KAOS",
-		License:       "Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>",
-		UpdateChecker: usage.UpdateChecker{"essentialkaos/mdtoc", update.GitHubChecker},
+		App:     APP,
+		Version: VER,
+		Desc:    DESC,
+		Year:    2006,
+		Owner:   "ESSENTIAL KAOS",
+		License: "Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>",
 	}
 
 	if gitRev != "" {
 		about.Build = "git:" + gitRev
+		about.UpdateChecker = usage.UpdateChecker{"essentialkaos/mdtoc", update.GitHubChecker}
 	}
 
 	return about
