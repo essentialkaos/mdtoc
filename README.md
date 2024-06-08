@@ -34,28 +34,7 @@ bash <(curl -fsSL https://apps.kaos.st/get) mdtoc
 
 ### Usage
 
-```
-Usage: mdtoc {options} file
-
-Options
-
-  --flat, -f             Print flat (horizontal) ToC
-  --html, -H             Render HTML ToC instead Markdown (works with --flat)
-  --min-level, -m 1-6    Minimal header level
-  --max-level, -M 1-6    Maximum header level
-  --no-color, -nc        Disable colors in output
-  --help, -h             Show this help message
-  --version, -v          Show version
-
-Examples
-
-  mdtoc readme.md
-  Generate table of contents for readme.md
-
-  mdtoc -m 2 -M 4 readme.md
-  Generate table of contents for readme.md with 2-4 level headers
-
-```
+<img src=".github/images/usage.svg" />
 
 ### Build Status
 
