@@ -1,14 +1,13 @@
-<p align="center"><a href="#readme"><img src="https://gh.kaos.st/mdtoc.svg"/></a></p>
+<p align="center"><a href="#readme"><img src=".github/images/card.svg"/></a></p>
 
 <p align="center">
   <a href="https://kaos.sh/w/mdtoc/ci"><img src="https://kaos.sh/w/mdtoc/ci.svg" alt="GitHub Actions CI Status" /></a>
   <a href="https://kaos.sh/w/mdtoc/codeql"><img src="https://kaos.sh/w/mdtoc/codeql.svg" alt="GitHub Actions CodeQL Status" /></a>
-  <a href="https://kaos.sh/r/mdtoc"><img src="https://kaos.sh/r/mdtoc.svg" alt="GoReportCard" /></a>
   <a href="https://kaos.sh/b/mdtoc"><img src="https://kaos.sh/b/196d721e-00ad-4dff-9032-9b5bbd11b723.svg" alt="Codebeat badge" /></a>
-  <a href="#license"><img src="https://gh.kaos.st/apache2.svg"></a>
+  <a href="#license"><img src=".github/images/license.svg"/></a>
 </p>
 
-<p align="center"><a href="#installation">Installation</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#contributing">Contributing</a> • <a href="#license">License</a></p>
+<p align="center"><a href="#installation">Installation</a> • <a href="#usage">Usage</a> • <a href="#ci-status">CI Status</a> • <a href="#contributing">Contributing</a> • <a href="#license">License</a></p>
 
 <br/>
 
@@ -18,10 +17,10 @@
 
 #### From source
 
-To build the MDToc from scratch, make sure you have a working Go 1.18+ workspace ([instructions](https://go.dev/doc/install)), then:
+To build the MDToc from scratch, make sure you have a working Go 1.21+ workspace ([instructions](https://go.dev/doc/install)), then:
 
 ```
-go install github.com/essentialkaos/mdtoc
+go install github.com/essentialkaos/mdtoc@latest
 ```
 
 #### Prebuilt binaries
@@ -34,30 +33,9 @@ bash <(curl -fsSL https://apps.kaos.st/get) mdtoc
 
 ### Usage
 
-```
-Usage: mdtoc {options} file
+<img src=".github/images/usage.svg"/>
 
-Options
-
-  --flat, -f             Print flat (horizontal) ToC
-  --html, -H             Render HTML ToC instead Markdown (works with --flat)
-  --min-level, -m 1-6    Minimal header level
-  --max-level, -M 1-6    Maximum header level
-  --no-color, -nc        Disable colors in output
-  --help, -h             Show this help message
-  --version, -v          Show version
-
-Examples
-
-  mdtoc readme.md
-  Generate table of contents for readme.md
-
-  mdtoc -m 2 -M 4 readme.md
-  Generate table of contents for readme.md with 2-4 level headers
-
-```
-
-### Build Status
+### CI Status
 
 | Branch | Status |
 |------------|--------|
