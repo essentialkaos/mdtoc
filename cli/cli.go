@@ -37,7 +37,7 @@ import (
 // App info
 const (
 	APP  = "MDToc"
-	VER  = "1.2.7"
+	VER  = "1.2.8"
 	DESC = "Utility for generating table of contents for markdown files"
 )
 
