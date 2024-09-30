@@ -1,9 +1,9 @@
 <p align="center"><a href="#readme"><img src=".github/images/card.svg"/></a></p>
 
 <p align="center">
+  <a href="https://kaos.sh/y/mdtoc"><img src="https://kaos.sh/y/cdf1fc4eca5b405d9ca8d703d195532a.svg" alt="Codacy badge" /></a>
   <a href="https://kaos.sh/w/mdtoc/ci"><img src="https://kaos.sh/w/mdtoc/ci.svg" alt="GitHub Actions CI Status" /></a>
   <a href="https://kaos.sh/w/mdtoc/codeql"><img src="https://kaos.sh/w/mdtoc/codeql.svg" alt="GitHub Actions CodeQL Status" /></a>
-  <a href="https://kaos.sh/b/mdtoc"><img src="https://kaos.sh/b/196d721e-00ad-4dff-9032-9b5bbd11b723.svg" alt="Codebeat badge" /></a>
   <a href="#license"><img src=".github/images/license.svg"/></a>
 </p>
 
