@@ -1,6 +1,6 @@
 module github.com/essentialkaos/mdtoc
 
-go 1.21.13
+go 1.22.7
 
 require github.com/essentialkaos/ek/v13 v13.5.1
 
