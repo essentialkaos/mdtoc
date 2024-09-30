@@ -1,10 +1,10 @@
 module github.com/essentialkaos/mdtoc
 
-go 1.18
+go 1.21.13
 
-require github.com/essentialkaos/ek/v12 v12.130.0
+require github.com/essentialkaos/ek/v13 v13.5.1
 
 require (
 	github.com/essentialkaos/depsy v1.3.0 // indirect
-	golang.org/x/sys v0.22.0 // indirect
+	golang.org/x/sys v0.25.0 // indirect
 )
