@@ -37,7 +37,7 @@ import (
 // App info
 const (
 	APP  = "MDToc"
-	VER  = "1.2.8"
+	VER  = "1.2.9"
 	DESC = "Utility for generating table of contents for markdown files"
 )
 
@@ -81,8 +81,11 @@ var optMap = options.Map{
 	OPT_GENERATE_MAN: {Type: options.BOOL},
 }
 
-var anchorRegExp = regexp.MustCompile(`[\s\d\w-]`)
-var badgeRegExp = regexp.MustCompile(`\[!\[[^\]]*\]\((.*?)\s*("(?:.*[^"])")?\s*\)\]\((.*?)\s*("(?:.*[^"])")?\s*\)`)
+var (
+	anchorRegExp = regexp.MustCompile(`[\s\d\w-]`)
+	badgeRegExp  = regexp.MustCompile(`\[!\[[^\]]*\]\((.*?)\s*("(?:.*[^"])")?\s*\)\]\((.*?)\s*("(?:.*[^"])")?\s*\)`)
+	linkRegExp   = regexp.MustCompile(`\[([^\]]+)\]\([^\)]+\)`)
+)
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
@@ -306,7 +309,7 @@ func parseHeader(text string) *Header {
 	header := &Header{}
 
 	headerText := strings.TrimRight(text, " ")
-	headerText = removeBadges(headerText)
+	headerText = formatHeader(headerText)
 
 	header.Text, header.Level = parseHeaderText(headerText)
 	header.Link = makeLink(headerText)
@@ -367,9 +370,15 @@ func getMinLevel(headers []*Header) int {
 	return result
 }
 
-// removeBadges removes badges from header
-func removeBadges(text string) string {
-	return badgeRegExp.ReplaceAllString(text, "")
+// formatHeader formats header text removing badges and links
+func formatHeader(text string) string {
+	text = badgeRegExp.ReplaceAllString(text, "")
+
+	for _, repl := range linkRegExp.FindAllStringSubmatch(text, -1) {
+		text = strings.ReplaceAll(text, repl[0], repl[1])
+	}
+
+	return removeMarkdownTags(text)
 }
 
 // printErrorAndExit prints error message and exit with exit code 1
