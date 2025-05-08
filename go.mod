@@ -2,7 +2,7 @@ module github.com/essentialkaos/mdtoc
 
 go 1.23.6
 
-require github.com/essentialkaos/ek/v13 v13.25.0
+require github.com/essentialkaos/ek/v13 v13.26.0
 
 require (
 	github.com/essentialkaos/depsy v1.3.1 // indirect
